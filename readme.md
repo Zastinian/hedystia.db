@@ -13,6 +13,7 @@ yarn add esmile.db
 ## Links
 
 - [Discord](https://discord.gg/aXvuUpvRQs) [Esmile Discord]
+- [Discord_Bot](https://mresmile.com) [Esmile Bot]
 
 ## Example
 

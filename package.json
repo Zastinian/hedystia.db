@@ -1,6 +1,6 @@
 {
   "name": "esmile.db",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A database made by the company esmile, easy to use",
   "main": "index.js",
   "types": "./typings/index.d.ts",
