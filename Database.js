@@ -1,13 +1,17 @@
-import fs from "fs";
-import {AES, enc} from "crypto-js";
-import Base from "./Base";
+const fs = require("fs");
+const cryptoJS = require("crypto-js");
 
-class Database extends Base {
-  constructor(filePath: string, password: string) {
-    super(filePath, password);
+const AES = cryptoJS.AES;
+const enc = cryptoJS.enc;
+
+const Database = class {
+  constructor(filePath, password) {
+    this.tables = {};
+    this.filePath = filePath || "./database.esmile";
+    this.password = password;
   }
 
-  createTable(tableName: string, columns: string[] = []) {
+  createTable(tableName, columns = []) {
     this.readFromFile();
     if (this.tables[tableName]) {
       throw new Error(`Table "${tableName}" already exists.`);
@@ -17,7 +21,7 @@ class Database extends Base {
     this.saveToFile();
   }
 
-  insert(tableName: string, record: {[key: string]: string}) {
+  insert(tableName, record) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -29,7 +33,7 @@ class Database extends Base {
     this.saveToFile();
   }
 
-  update(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}) {
+  update(tableName, query, newData) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -44,7 +48,7 @@ class Database extends Base {
     this.saveToFile();
   }
 
-  select(tableName: string, query: {[key: string]: string} = {}) {
+  select(tableName, query = {}) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -52,7 +56,7 @@ class Database extends Base {
     return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  delete(tableName: string, query: {[key: string]: string} = {}) {
+  delete(tableName, query = {}) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -64,17 +68,16 @@ class Database extends Base {
     this.saveToFile();
   }
 
-  private saveToFile() {
+  saveToFile() {
     const data = JSON.stringify(this.tables);
     const encrypted = AES.encrypt(data, this.password).toString();
     fs.writeFileSync(this.filePath, encrypted);
   }
 
-  private readFromFile() {
+  readFromFile() {
     if (!fs.existsSync(this.filePath)) {
       return;
     }
-
     const encrypted = fs.readFileSync(this.filePath, "utf8");
     const data = AES.decrypt(encrypted, this.password).toString(enc.Utf8);
     try {
@@ -83,6 +86,6 @@ class Database extends Base {
       this.tables = {};
     }
   }
-}
+};
 
-export default Database;
+module.exports = Database;

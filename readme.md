@@ -23,7 +23,7 @@ const Database = require("esmile.db");
 // Create a file named database.esmile and enter the password
 const database = new Database("./database.esmile", "password");
 
-// Only use it 1 time or you can delete all the data if it is run for 2 times put it in a database_init.js file
+// You can only use it once to create the table after that you can no longer use it.
 database.createTable("users", ["id", "name", "email"]);
 
 database.insert("users", {id: "1", name: "John Doe", email: "jdoe@example.com"});
@@ -36,7 +36,7 @@ console.log("----------------------------------");
 
 console.log(users);
 
-const userJohn = database.select("usuarios", {name: "John Doe"});
+const userJohn = database.select("users", {name: "John Doe"});
 console.log("----------------------------------");
 console.log(userJohn);
 

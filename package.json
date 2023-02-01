@@ -1,15 +1,18 @@
 {
   "name": "esmile.db",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A database made by the company esmile, easy to use",
-  "main": "index.js",
-  "types": "./typings/index.d.ts",
+  "main": "Database.js",
+  "types": "Database.d.ts",
   "keywords": [
     "Database",
     "Esmile",
     "Discord",
     "node"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "author": "contact@mresmile.com",
   "license": "ISC",
   "engines": {

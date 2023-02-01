@@ -1,5 +1,4 @@
 node_modules/
-test.ts
 yarn.lock
 database.esmile
-*.js
+test.js
