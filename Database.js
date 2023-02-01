@@ -21,6 +21,16 @@ const Database = class {
     this.saveToFile();
   }
 
+  deleteTable(tableName) {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      throw new Error(`Table "${tableName}" does not exist.`);
+    }
+
+    delete this.tables[tableName];
+    this.saveToFile();
+  }
+
   insert(tableName, record) {
     this.readFromFile();
     if (!this.tables[tableName]) {
@@ -69,6 +79,9 @@ const Database = class {
   }
 
   saveToFile() {
+    if (!this.filePath.endsWith(".esmile")) {
+      throw new Error(`File path must include '.esmile': ${this.filePath}`);
+    }
     const data = JSON.stringify(this.tables);
     const encrypted = AES.encrypt(data, this.password).toString();
     fs.writeFileSync(this.filePath, encrypted);

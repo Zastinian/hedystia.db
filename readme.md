@@ -1,9 +1,9 @@
 ## Installation
 
 ```
-npm i esmile.db
+npm i esmile-db
 
-yarn add esmile.db
+yarn add esmile-db
 ```
 
 ## Nodejs Version
@@ -18,7 +18,7 @@ yarn add esmile.db
 ## Example
 
 ```js
-const Database = require("esmile.db");
+const Database = require("esmile-db");
 
 // Create a file named database.esmile and enter the password
 const database = new Database("./database.esmile", "password");
@@ -58,6 +58,7 @@ console.log(users3);
 | Function      | Description                          |
 | ------------- | ------------------------------------ |
 | `createTable` | To create a table                    |
+| `deleteTable` | To delete a table                    |
 | `insert`      | To insert a data in the table        |
 | `update`      | To update a data in the table        |
 | `select`      | To search for information in a table |
