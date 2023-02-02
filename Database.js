@@ -7,7 +7,7 @@ const enc = cryptoJS.enc;
 const Database = class {
   constructor(filePath, password) {
     this.tables = {};
-    this.filePath = filePath || "./database.esmile";
+    this.filePath = filePath || "./database.es";
     this.password = password;
   }
 
