@@ -79,8 +79,8 @@ const Database = class {
   }
 
   saveToFile() {
-    if (!this.filePath.endsWith(".esmile")) {
-      throw new Error(`File path must include '.esmile': ${this.filePath}`);
+    if (!this.filePath.endsWith(".es")) {
+      throw new Error(`File path must include '.es': ${this.filePath}`);
     }
     const data = JSON.stringify(this.tables);
     const encrypted = AES.encrypt(data, this.password).toString();

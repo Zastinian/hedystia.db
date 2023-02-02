@@ -20,8 +20,8 @@ yarn add esmile-db
 ```js
 const Database = require("esmile-db");
 
-// Create a file named database.esmile and enter the password
-const database = new Database("./database.esmile", "password");
+// Create a file named database.es and enter the password
+const database = new Database("./database.es", "password");
 
 // You can only use it once to create the table after that you can no longer use it.
 database.createTable("users", ["id", "name", "email"]);

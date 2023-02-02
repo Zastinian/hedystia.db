@@ -1,6 +1,6 @@
 {
   "name": "esmile-db",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A database made by the company esmile, easy to use",
   "main": "Database.js",
   "types": "Database.d.ts",
@@ -10,19 +10,12 @@
     "Discord",
     "node"
   ],
-  "scripts": {
-    "build": "tsc"
-  },
   "author": "contact@mresmile.com",
   "license": "ISC",
   "engines": {
     "node": ">=16.9.0"
   },
-  "devDependencies": {
-    "@types/crypto-js": "^4.1.1",
-    "@types/node": "^18.11.18"
-  },
   "dependencies": {
-    "crypto-js": "^4.1.1"
+    "crypto-js": "4.1.1"
   }
 }
