@@ -1,6 +1,6 @@
 {
   "name": "esmile-db",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A database made by the company esmile, easy to use",
   "main": "Database.js",
   "types": "Database.d.ts",
@@ -17,5 +17,13 @@
   },
   "dependencies": {
     "crypto-js": "4.1.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zastinian/esmile.db.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zastinian/esmile.db/issues"
+  },
+  "homepage": "https://github.com/Zastinian/esmile.db#readme"
 }
