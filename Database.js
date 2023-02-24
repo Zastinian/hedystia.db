@@ -9,6 +9,7 @@ const Database = class {
     this.tables = {};
     this.filePath = filePath || "./database.es";
     this.password = password;
+    this.queue = [];
   }
 
   createTable(tableName, columns = []) {
@@ -32,6 +33,50 @@ const Database = class {
   }
 
   insert(tableName, record) {
+    this.queue.push({method: "insert", table: tableName, record});
+    if (this.queue.length === 1) {
+      this.processQueue();
+    }
+  }
+
+  update(tableName, query, newData) {
+    this.queue.push({method: "update", table: tableName, query, newData});
+    if (this.queue.length === 1) {
+      this.processQueue();
+    }
+  }
+
+  select(tableName, query = {}) {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      throw new Error(`Table "${tableName}" does not exist.`);
+    }
+    return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
+  }
+
+  delete(tableName, query = {}) {
+    this.queue.push({method: "delete", table: tableName, query});
+    if (this.queue.length === 1) {
+      this.processQueue();
+    }
+  }
+
+  processQueue() {
+    const request = this.queue[0];
+    switch (request.method) {
+      case "insert":
+        this.insertTable(request.table, request.record);
+        break;
+      case "update":
+        this.updateTable(request.table, request.query, request.newData);
+        break;
+      case "delete":
+        this.deleteFromTable(request.table, request.query);
+        break;
+    }
+  }
+
+  insertTable(tableName, record) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -41,9 +86,13 @@ const Database = class {
     const formattedRecord = table.columns.reduce((obj, column) => ({...obj, [column]: record[column] || null}), {});
     table.records.push(formattedRecord);
     this.saveToFile();
+    this.queue.shift();
+    if (this.queue.length > 0) {
+      this.processQueue();
+    }
   }
 
-  update(tableName, query, newData) {
+  updateTable(tableName, query, newData) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -56,17 +105,13 @@ const Database = class {
       return record;
     });
     this.saveToFile();
-  }
-
-  select(tableName, query = {}) {
-    this.readFromFile();
-    if (!this.tables[tableName]) {
-      throw new Error(`Table "${tableName}" does not exist.`);
+    this.queue.shift();
+    if (this.queue.length > 0) {
+      this.processQueue();
     }
-    return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  delete(tableName, query = {}) {
+  deleteFromTable(tableName, query) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -76,6 +121,10 @@ const Database = class {
       (record) => !Object.entries(query).every(([column, value]) => record[column] === value)
     );
     this.saveToFile();
+    this.queue.shift();
+    if (this.queue.length > 0) {
+      this.processQueue();
+    }
   }
 
   saveToFile() {

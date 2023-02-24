@@ -1,5 +1,6 @@
 node_modules/
 yarn.lock
-database.esmile
+database.es
 .git/
 test.js
+pnpm-lock.yaml

@@ -1,6 +1,6 @@
 {
   "name": "esmile-db",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A database made by the company esmile, easy to use",
   "main": "Database.js",
   "types": "Database.d.ts",
