@@ -7,7 +7,7 @@ const enc = cryptoJS.enc;
 const Database = class {
   constructor(filePath, password) {
     this.tables = {};
-    this.filePath = filePath || "./database.es";
+    this.filePath = filePath || "./database.ht";
     this.password = password;
     this.queue = [];
   }
@@ -128,8 +128,8 @@ const Database = class {
   }
 
   saveToFile() {
-    if (!this.filePath.endsWith(".es")) {
-      throw new Error(`File path must include '.es': ${this.filePath}`);
+    if (!this.filePath.endsWith(".ht")) {
+      throw new Error(`File path must include '.ht': ${this.filePath}`);
     }
     const data = JSON.stringify(this.tables);
     const encrypted = AES.encrypt(data, this.password).toString();

@@ -1,16 +1,16 @@
 {
-  "name": "esmile-db",
+  "name": "hedystia.db",
   "version": "1.2.1",
-  "description": "A database made by the company esmile, easy to use",
+  "description": "A database made by the company hedystia, easy to use",
   "main": "Database.js",
   "types": "Database.d.ts",
   "keywords": [
     "Database",
-    "Esmile",
+    "Hedystia",
     "Discord",
     "node"
   ],
-  "author": "contact@mresmile.com",
+  "author": "contact@hedystia.com",
   "license": "ISC",
   "engines": {
     "node": ">=16.9.0"
@@ -20,10 +20,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zastinian/esmile.db.git"
+    "url": "git+https://github.com/Zastinian/hedystia.db.git"
   },
   "bugs": {
-    "url": "https://github.com/Zastinian/esmile.db/issues"
+    "url": "https://github.com/Zastinian/hedystia.db/issues"
   },
-  "homepage": "https://github.com/Zastinian/esmile.db#readme"
+  "homepage": "https://github.com/Zastinian/hedystia.db#readme"
 }

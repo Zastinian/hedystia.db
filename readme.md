@@ -1,9 +1,9 @@
 ## Installation
 
 ```
-npm i esmile-db
+npm i hedystia.db
 
-yarn add esmile-db
+yarn add hedystia.db
 ```
 
 ## Nodejs Version
@@ -12,16 +12,16 @@ yarn add esmile-db
 
 ## Links
 
-- [Discord](https://discord.gg/aXvuUpvRQs) [Esmile Discord]
-- [Discord_Bot](https://mresmile.com) [Esmile Bot]
+- [Discord](https://discord.gg/aXvuUpvRQs) [Hedystia Discord]
+- [Discord_Bot](https://hedystia.com) [Hedystia Bot]
 
 ## Example
 
 ```js
-const Database = require("esmile-db");
+const Database = require("hedystia-db");
 
-// Create a file named database.es and enter the password
-const database = new Database("./database.es", "password");
+// Create a file named database.ht and enter the password
+const database = new Database("./database.ht", "password");
 
 // You can only use it once to create the table after that you can no longer use it.
 database.createTable("users", ["id", "name", "email"]);
