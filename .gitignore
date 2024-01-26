@@ -1,4 +1,1 @@
-node_modules/
-yarn.lock
-database.hedystia
-test.js
+*.ht

@@ -118,7 +118,7 @@ const Database = class {
     }
 
     this.tables[tableName].records = this.tables[tableName].records.filter(
-      (record) => !Object.entries(query).every(([column, value]) => record[column] === value)
+      (record) => !Object.entries(query).every(([column, value]) => record[column] === value),
     );
     this.saveToFile();
     this.queue.shift();

@@ -1,6 +1,0 @@
-node_modules/
-yarn.lock
-database.ht
-.git/
-test.js
-pnpm-lock.yaml

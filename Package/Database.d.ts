@@ -17,7 +17,7 @@ declare class Database {
     tableName: string,
     record: {
       [key: string]: string;
-    }
+    },
   ): void;
   update(
     tableName: string,
@@ -26,13 +26,13 @@ declare class Database {
     },
     newData: {
       [key: string]: string;
-    }
+    },
   ): void;
   select(
     tableName: string,
     query?: {
       [key: string]: string;
-    }
+    },
   ): {
     [key: string]: string;
   }[];
@@ -40,7 +40,7 @@ declare class Database {
     tableName: string,
     query?: {
       [key: string]: string;
-    }
+    },
   ): void;
   private saveToFile;
   private readFromFile;
