@@ -1,3 +1,7 @@
 node_modules/
-pnpm-lock.yaml
 .gitignore
+Cargo.lock
+Cargo.toml
+pnpm-lock.yaml
+target/
+src/

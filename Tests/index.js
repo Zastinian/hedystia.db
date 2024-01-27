@@ -1,13 +1,31 @@
-const db = require("../Package/Database");
+const db = require("../Package/index");
 
-const d_1 = new db("../db.ht", "123");
-const d_2 = new db("../db2.ht", "123");
+const database =  db("./database.ht", "password");
 
-d_1.createTable("users", ["id", "name", "email"]);
-d_2.createTable("users", ["id", "name", "email"]);
+database.createTable("users", ["id", "name", "email"]);
 
-const d_3 = new db("./db.ht", "123");
-const d_4 = new db("./db2.ht", "123");
+database.insert("users", {id: "1", name: "John Doe", email: "jdoe@example.com"});
 
-d_3.createTable("users", ["id", "name", "email"]);
-d_4.createTable("users", ["id", "name", "email"]);
+database.insert("users", {id: "2", name: "María", email: "maria@example.com"});
+
+const users = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(users);
+
+const userJohn = database.select("users", {name: "John Doe"});
+console.log("----------------------------------");
+console.log(userJohn);
+
+database.delete("users", {name: "María"});
+
+const users2 = database.select("users");
+console.log("----------------------------------");
+console.log(users2);
+
+database.update("users", {id: "1"}, {name: "Jane Doe"});
+
+const users3 = database.select("users");
+console.log("----------------------------------");
+console.log(users3);
