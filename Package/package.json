@@ -1,6 +1,6 @@
 {
   "name": "hedystia.db",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "A database made by the company hedystia, easy to use",
   "main": "index.js",
   "types": "index.d.ts",

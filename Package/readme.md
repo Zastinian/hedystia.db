@@ -21,7 +21,7 @@ yarn add hedystia.db
 const Database = require("hedystia.db");
 
 // Create a file named database.ht and enter the password
-const database = Database("./database.ht", "password");
+const database = new Database("./database.ht", "password");
 
 // You can only use it once to create the table after that you can no longer use it.
 database.createTable("users", ["id", "name", "email"]);
