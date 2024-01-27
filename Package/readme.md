@@ -57,7 +57,6 @@ console.log(users3);
 
 | Function      | Description                          |
 | ------------- | ------------------------------------ |
-| `init`        | To start the database                |
 | `createTable` | To create a table                    |
 | `deleteTable` | To delete a table                    |
 | `insert`      | To insert a data in the table        |
