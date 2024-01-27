@@ -1,5 +1,4 @@
 node_modules/
-index.node
-Cargo.lock
 pnpm-lock.yaml
-target/
+index.d.ts
+index.js

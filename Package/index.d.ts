@@ -1,13 +1,21 @@
-declare class Database {
-  constructor(file_path: string, password: string);
-  createTable(table_name: string, columns: string[]): void;
-  deleteTable(table_name: string): void;
-  insert(table_name: string, record: Record<string, string>): void;
-  update(table_name: string, query: Record<string, string>, new_data: Record<string, string>): void;
-  select(table_name: string, query?: Record<string, string>): Record<string, string>[];
-  delete(table_name: string, query: Record<string, string>): void;
-}
-
-declare function init(file_path: string, password: string): Database;
-
-export default init;
+declare const createDatabase: (filePath: string, password: string) => {
+    createTable: (tableName: string, columns: string[]) => void;
+    deleteTable: (tableName: string) => void;
+    insert: (tableName: string, record: {
+        [key: string]: string;
+    }) => void;
+    update: (tableName: string, query: {
+        [key: string]: string;
+    }, newData: {
+        [key: string]: string;
+    }) => void;
+    select: (tableName: string, query: {
+        [key: string]: string;
+    }) => {
+        [key: string]: string;
+    }[];
+    delete: (tableName: string, query: {
+        [key: string]: string;
+    }) => void;
+};
+export default createDatabase;
