@@ -1,6 +1,6 @@
 const db = require("../Package/index");
 
-const database =  db("./database.ht", "password");
+const database =  new db("./database.ht", "password");
 
 database.createTable("users", ["id", "name", "email"]);
 
