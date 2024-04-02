@@ -4,14 +4,14 @@ import cryptoJS from "crypto-js";
 const AES = cryptoJS.AES;
 const enc = cryptoJS.enc;
 
-interface Table {
+export interface Table {
   columns: string[];
   records: {
     [key: string]: string;
   }[];
 }
 
-interface QueueItem {
+export interface QueueItem {
   method: string;
   table: string;
   record?: {[key: string]: string};
@@ -19,7 +19,7 @@ interface QueueItem {
   newData?: {[key: string]: string};
 }
 
-const Database = class {
+export default class DataBase {
   queue: QueueItem[] = [];
   password: string;
   filePath: string;
@@ -31,7 +31,7 @@ const Database = class {
     this.queue = [];
   }
 
-  createTable(tableName: string, columns: string[]): void {
+  public createTable(tableName: string, columns: string[]): void {
     this.readFromFile();
     if (this.tables[tableName]) {
       throw new Error(`Table "${tableName}" already exists.`);
@@ -41,7 +41,7 @@ const Database = class {
     this.saveToFile();
   }
 
-  deleteTable(tableName: string): void {
+  public deleteTable(tableName: string): void {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -51,21 +51,21 @@ const Database = class {
     this.saveToFile();
   }
 
-  insert(tableName: string, record: {[key: string]: string}): void {
+  public insert(tableName: string, record: {[key: string]: string}): void {
     this.queue.push({method: "insert", table: tableName, record});
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  update(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}): void {
+  public update(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}): void {
     this.queue.push({method: "update", table: tableName, query, newData});
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  select(tableName: string, query: {[key: string]: string}): {[key: string]: string}[] {
+  public select(tableName: string, query: {[key: string]: string}): unknown {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -73,14 +73,14 @@ const Database = class {
     return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  delete(tableName: string, query: {[key: string]: string}): void {
+  public delete(tableName: string, query: {[key: string]: string}): void {
     this.queue.push({method: "delete", table: tableName, query});
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  processQueue() {
+  private processQueue() {
     const request = this.queue[0];
     switch (request.method) {
       case "insert":
@@ -95,7 +95,7 @@ const Database = class {
     }
   }
 
-  insertTable(tableName: string, record: {[key: string]: string}) {
+  private insertTable(tableName: string, record: {[key: string]: string}) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -111,7 +111,7 @@ const Database = class {
     }
   }
 
-  updateTable(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}) {
+  private updateTable(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -130,7 +130,7 @@ const Database = class {
     }
   }
 
-  deleteFromTable(tableName: string, query: {[key: string]: string}) {
+  private deleteFromTable(tableName: string, query: {[key: string]: string}) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -146,7 +146,7 @@ const Database = class {
     }
   }
 
-  saveToFile() {
+  private saveToFile() {
     if (!this.filePath.endsWith(".ht")) {
       throw new Error(`File path must include '.ht': ${this.filePath}`);
     }
@@ -155,7 +155,7 @@ const Database = class {
     fs.writeFileSync(this.filePath, encrypted);
   }
 
-  readFromFile() {
+  private readFromFile() {
     if (!fs.existsSync(this.filePath)) {
       return;
     }
@@ -167,6 +167,4 @@ const Database = class {
       this.tables = {};
     }
   }
-};
-
-export default Database;
+}
