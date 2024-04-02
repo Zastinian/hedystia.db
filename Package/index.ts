@@ -4,14 +4,14 @@ import cryptoJS from "crypto-js";
 const AES = cryptoJS.AES;
 const enc = cryptoJS.enc;
 
-export interface Table {
+interface Table {
   columns: string[];
   records: {
     [key: string]: string;
   }[];
 }
 
-export interface QueueItem {
+interface QueueItem {
   method: string;
   table: string;
   record?: {[key: string]: string};

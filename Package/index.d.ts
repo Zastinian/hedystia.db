@@ -1,10 +1,10 @@
-export interface Table {
+interface Table {
     columns: string[];
     records: {
         [key: string]: string;
     }[];
 }
-export interface QueueItem {
+interface QueueItem {
     method: string;
     table: string;
     record?: {
