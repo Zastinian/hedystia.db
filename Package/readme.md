@@ -8,12 +8,13 @@ yarn add hedystia.db
 
 ## Nodejs Version
 
-- `v16.9.0` or higher
+- `v18.0.0` or higher
 
 ## Links
 
 - [Discord](https://discord.gg/aXvuUpvRQs) [Hedystia Discord]
 - [Discord_Bot](https://hedystia.com) [Hedystia Bot]
+- [Docs](https://docs.hedystia.com/db/start) [Hedystia Docs]
 
 ## Example
 
