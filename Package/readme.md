@@ -1,9 +1,9 @@
 ## Installation
 
 ```
-npm i hedystia.db
+npm i @hedystia/db
 
-yarn add hedystia.db
+yarn add @hedystia/db
 ```
 
 ## Nodejs Version
@@ -19,7 +19,7 @@ yarn add hedystia.db
 ## Example
 
 ```js
-const Database = require("hedystia.db");
+const Database = require("@hedystia/db");
 
 // Create a file named database.ht and enter the password
 const database = new Database("./database.ht", "password");
