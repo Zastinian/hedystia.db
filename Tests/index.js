@@ -16,11 +16,19 @@ console.log(users);
 
 database.addColumn("users", "phone", "null");
 
-const usersPhone = database.select("users");
+const newUsersPhone = database.select("users");
 
 console.log("----------------------------------");
 
-console.log(usersPhone);
+console.log(newUsersPhone);
+
+database.deleteColumn("users", "phone");
+
+const oldUsersPhone = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(oldUsersPhone);
 
 const userJohn = database.select("users", { name: "John Doe" });
 console.log("----------------------------------");
