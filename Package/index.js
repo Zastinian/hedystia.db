@@ -22,6 +22,14 @@ const Database = class {
     this.saveToFile();
   }
 
+  createTableIfNotExists(tableName, columns) {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      this.tables[tableName] = { columns, records: [] };
+      this.saveToFile();
+    }
+  }
+
   deleteTable(tableName) {
     this.readFromFile();
     if (!this.tables[tableName]) {
@@ -30,6 +38,14 @@ const Database = class {
 
     delete this.tables[tableName];
     this.saveToFile();
+  }
+
+  deleteTableIfExists(tableName) {
+    this.readFromFile();
+    if (this.tables[tableName]) {
+      delete this.tables[tableName];
+      this.saveToFile();
+    }
   }
 
   addColumn(tableName, column, defaultValue) {

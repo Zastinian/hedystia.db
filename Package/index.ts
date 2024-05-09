@@ -41,6 +41,14 @@ export default class DataBase {
     this.saveToFile();
   }
 
+  public createTableIfNotExists(tableName: string, columns: string[]): void {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      this.tables[tableName] = { columns, records: [] };
+      this.saveToFile();
+    }
+  }
+
   public deleteTable(tableName: string): void {
     this.readFromFile();
     if (!this.tables[tableName]) {
@@ -49,6 +57,14 @@ export default class DataBase {
 
     delete this.tables[tableName];
     this.saveToFile();
+  }
+
+  public deleteTableIfExists(tableName: string): void {
+    this.readFromFile();
+    if (this.tables[tableName]) {
+      delete this.tables[tableName];
+      this.saveToFile();
+    }
   }
 
   public addColumn(tableName: string, column: string, defaultValue: any): void {
