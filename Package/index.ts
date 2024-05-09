@@ -7,23 +7,23 @@ const enc = cryptoJS.enc;
 interface Table {
   columns: string[];
   records: {
-    [key: string]: string;
+    [key: string]: any;
   }[];
 }
 
 interface QueueItem {
   method: string;
   table: string;
-  record?: {[key: string]: string};
-  query?: {[key: string]: string};
-  newData?: {[key: string]: string};
+  record?: { [key: string]: any };
+  query?: { [key: string]: any };
+  newData?: { [key: string]: any };
 }
 
 export default class DataBase {
   queue: QueueItem[] = [];
   password: string;
   filePath: string;
-  tables: {[key: string]: Table} = {};
+  tables: { [key: string]: Table } = {};
   constructor(filePath: string, password: string) {
     this.tables = {};
     this.filePath = filePath || "./database.ht";
@@ -37,7 +37,7 @@ export default class DataBase {
       throw new Error(`Table "${tableName}" already exists.`);
     }
 
-    this.tables[tableName] = {columns, records: []};
+    this.tables[tableName] = { columns, records: [] };
     this.saveToFile();
   }
 
@@ -51,21 +51,54 @@ export default class DataBase {
     this.saveToFile();
   }
 
-  public insert(tableName: string, record: {[key: string]: string}): void {
-    this.queue.push({method: "insert", table: tableName, record});
+  public addColumn(tableName: string, column: string, defaultValue: any): void {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      throw new Error(`Table "${tableName}" does not exist.`);
+    }
+    if (this.tables[tableName].columns.includes(column)) {
+      throw new Error(`Column "${column}" already exists in table "${tableName}".`);
+    }
+
+    this.tables[tableName].columns.push(column);
+    for (const record of this.tables[tableName].records) {
+      record[column] = defaultValue ?? null;
+    }
+    this.saveToFile();
+  }
+
+  public deleteColumn(tableName: string, column: string): void {
+    this.readFromFile();
+    if (!this.tables[tableName]) {
+      throw new Error(`Table "${tableName}" does not exist.`);
+    }
+    if (!this.tables[tableName].columns.includes(column)) {
+      throw new Error(`Column "${column}" does not exist in table "${tableName}".`);
+    }
+
+    const columnIndex = this.tables[tableName].columns.indexOf(column);
+    this.tables[tableName].columns.splice(columnIndex, 1);
+    for (const record of this.tables[tableName].records) {
+      delete record[column];
+    }
+    this.saveToFile();
+  }
+
+  public insert(tableName: string, record: { [key: string]: any }): void {
+    this.queue.push({ method: "insert", table: tableName, record });
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  public update(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}): void {
-    this.queue.push({method: "update", table: tableName, query, newData});
+  public update(tableName: string, query: { [key: string]: any }, newData: { [key: string]: any }): void {
+    this.queue.push({ method: "update", table: tableName, query, newData });
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  public select(tableName: string, query: {[key: string]: string}): unknown {
+  public select(tableName: string, query: { [key: string]: any }): unknown {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -73,8 +106,8 @@ export default class DataBase {
     return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  public delete(tableName: string, query: {[key: string]: string}): void {
-    this.queue.push({method: "delete", table: tableName, query});
+  public delete(tableName: string, query: { [key: string]: any }): void {
+    this.queue.push({ method: "delete", table: tableName, query });
     if (this.queue.length === 1) {
       this.processQueue();
     }
@@ -84,25 +117,25 @@ export default class DataBase {
     const request = this.queue[0];
     switch (request.method) {
       case "insert":
-        this.insertTable(request.table, request.record as {[key: string]: string});
+        this.insertTable(request.table, request.record as { [key: string]: any });
         break;
       case "update":
-        this.updateTable(request.table, request.query as {[key: string]: string}, request.newData as {[key: string]: string});
+        this.updateTable(request.table, request.query as { [key: string]: any }, request.newData as { [key: string]: any });
         break;
       case "delete":
-        this.deleteFromTable(request.table, request.query as {[key: string]: string});
+        this.deleteFromTable(request.table, request.query as { [key: string]: any });
         break;
     }
   }
 
-  private insertTable(tableName: string, record: {[key: string]: string}) {
+  private insertTable(tableName: string, record: { [key: string]: any }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
     }
 
     const table = this.tables[tableName];
-    const formattedRecord = table.columns.reduce((obj, column) => ({...obj, [column]: record[column] || null}), {});
+    const formattedRecord = table.columns.reduce((obj, column) => ({ ...obj, [column]: record[column] || null }), {});
     table.records.push(formattedRecord);
     this.saveToFile();
     this.queue.shift();
@@ -111,18 +144,21 @@ export default class DataBase {
     }
   }
 
-  private updateTable(tableName: string, query: {[key: string]: string}, newData: {[key: string]: string}) {
+  private updateTable(tableName: string, query: { [key: string]: any }, newData: { [key: string]: any }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
     }
     const table = this.tables[tableName];
-    table.records = table.records.map((record) => {
-      if (Object.entries(query).every(([column, value]) => record[column] === value)) {
-        return {...record, ...newData};
-      }
+    const updatedRecords = table.records.map((record) => {
+      Object.entries(newData).forEach(([column, value]) => {
+        if (table.columns.includes(column) && Object.entries(query).every(([qColumn, qValue]) => record[qColumn] === qValue)) {
+          record[column] = value;
+        }
+      });
       return record;
     });
+    table.records = updatedRecords;
     this.saveToFile();
     this.queue.shift();
     if (this.queue.length > 0) {
@@ -130,7 +166,7 @@ export default class DataBase {
     }
   }
 
-  private deleteFromTable(tableName: string, query: {[key: string]: string}) {
+  private deleteFromTable(tableName: string, query: { [key: string]: any }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
