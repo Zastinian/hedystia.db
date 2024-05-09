@@ -1,20 +1,20 @@
 interface Table {
     columns: string[];
     records: {
-        [key: string]: string;
+        [key: string]: any;
     }[];
 }
 interface QueueItem {
     method: string;
     table: string;
     record?: {
-        [key: string]: string;
+        [key: string]: any;
     };
     query?: {
-        [key: string]: string;
+        [key: string]: any;
     };
     newData?: {
-        [key: string]: string;
+        [key: string]: any;
     };
 }
 export default class DataBase {
@@ -27,19 +27,21 @@ export default class DataBase {
     constructor(filePath: string, password: string);
     createTable(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;
+    addColumn(tableName: string, column: string, defaultValue: any): void;
+    deleteColumn(tableName: string, column: string): void;
     insert(tableName: string, record: {
-        [key: string]: string;
+        [key: string]: any;
     }): void;
     update(tableName: string, query: {
-        [key: string]: string;
+        [key: string]: any;
     }, newData: {
-        [key: string]: string;
+        [key: string]: any;
     }): void;
     select(tableName: string, query: {
-        [key: string]: string;
+        [key: string]: any;
     }): unknown;
     delete(tableName: string, query: {
-        [key: string]: string;
+        [key: string]: any;
     }): void;
     private processQueue;
     private insertTable;
@@ -48,3 +50,4 @@ export default class DataBase {
     private saveToFile;
     private readFromFile;
 }
+export {};
