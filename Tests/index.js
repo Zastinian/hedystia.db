@@ -14,7 +14,9 @@ console.log("----------------------------------");
 
 console.log(users);
 
-database.addColumn("users", "phone", "null");
+database.addColumn("users", "phone");
+
+database.addColumn("users", "lang", "en-US");
 
 const newUsersPhone = database.select("users");
 
@@ -31,17 +33,23 @@ console.log("----------------------------------");
 console.log(oldUsersPhone);
 
 const userJohn = database.select("users", { name: "John Doe" });
+
 console.log("----------------------------------");
+
 console.log(userJohn);
 
 database.delete("users", { name: "María" });
 
 const users2 = database.select("users");
+
 console.log("----------------------------------");
+
 console.log(users2);
 
-database.update("users", { id: "1" }, { name: "Jane Doe" });
+database.update("users", { id: "1" }, { name: "Jane Doe", lang: "es-ES" });
 
 const users3 = database.select("users");
+
 console.log("----------------------------------");
+
 console.log(users3);
