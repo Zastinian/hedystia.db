@@ -26,7 +26,9 @@ export default class DataBase {
     };
     constructor(filePath: string, password: string);
     createTable(tableName: string, columns: string[]): void;
+    createTableIfNotExists(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;
+    deleteTableIfExists(tableName: string): void;
     addColumn(tableName: string, column: string, defaultValue: any): void;
     deleteColumn(tableName: string, column: string): void;
     insert(tableName: string, record: {
