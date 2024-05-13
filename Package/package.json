@@ -1,6 +1,6 @@
 {
   "name": "@hedystia/db",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A database made by the company hedystia, easy to use",
   "main": "index.js",
   "types": "index.d.ts",
@@ -15,7 +15,7 @@
     "typescript"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "bun build --target=node index.ts --outfile bot.js --minify-syntax --minify-identifiers"
   },
   "author": "contact@hedystia.com",
   "license": "ISC",
