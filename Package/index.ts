@@ -31,7 +31,7 @@ export default class DataBase {
     this.queue = [];
   }
 
-  public createTable(tableName: string, columns: string[]): void {
+  public createTable(tableName: string, columns: string[] = []): void {
     this.readFromFile();
     if (this.tables[tableName]) {
       throw new Error(`Table "${tableName}" already exists.`);
@@ -114,7 +114,7 @@ export default class DataBase {
     }
   }
 
-  public select(tableName: string, query: { [key: string]: any }): unknown {
+  public select(tableName: string, query: { [key: string]: any } = {}): unknown {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -122,7 +122,7 @@ export default class DataBase {
     return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  public delete(tableName: string, query: { [key: string]: any }): void {
+  public delete(tableName: string, query: { [key: string]: any } = {}): void {
     this.queue.push({ method: "delete", table: tableName, query });
     if (this.queue.length === 1) {
       this.processQueue();

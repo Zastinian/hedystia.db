@@ -3,3 +3,4 @@ node_modules/
 pnpm-lock.yaml
 index.ts
 tsconfig.json
+bun.lockb

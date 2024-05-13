@@ -25,7 +25,7 @@ export default class DataBase {
         [key: string]: Table;
     };
     constructor(filePath: string, password: string);
-    createTable(tableName: string, columns: string[]): void;
+    createTable(tableName: string, columns?: string[]): void;
     createTableIfNotExists(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;
     deleteTableIfExists(tableName: string): void;
@@ -39,10 +39,10 @@ export default class DataBase {
     }, newData: {
         [key: string]: any;
     }): void;
-    select(tableName: string, query: {
+    select(tableName: string, query?: {
         [key: string]: any;
     }): unknown;
-    delete(tableName: string, query: {
+    delete(tableName: string, query?: {
         [key: string]: any;
     }): void;
     private processQueue;

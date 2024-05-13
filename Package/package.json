@@ -1,6 +1,6 @@
 {
   "name": "@hedystia/db",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "A database made by the company hedystia, easy to use",
   "main": "index.js",
   "types": "index.d.ts",
@@ -27,12 +27,10 @@
     "url": "https://github.com/Zastinian/hedystia.db/issues"
   },
   "homepage": "https://docs.hedystia.com/db/start",
-  "dependencies": {
-    "crypto-js": "^4.2.0"
-  },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
-    "@types/node": "^20.11.8"
+    "@types/node": "^20.11.8",
+    "crypto-js": "^4.2.0"
   },
   "engines": {
     "node": ">=18.0.0"
