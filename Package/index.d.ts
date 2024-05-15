@@ -41,7 +41,7 @@ export default class DataBase {
     }): void;
     select(tableName: string, query?: {
         [key: string]: any;
-    }): unknown;
+    }): unknown[];
     delete(tableName: string, query?: {
         [key: string]: any;
     }): void;

@@ -114,7 +114,7 @@ export default class DataBase {
     }
   }
 
-  public select(tableName: string, query: { [key: string]: any } = {}): unknown {
+  public select(tableName: string, query: { [key: string]: any } = {}): unknown[] {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -189,7 +189,7 @@ export default class DataBase {
     }
 
     this.tables[tableName].records = this.tables[tableName].records.filter(
-      (record) => !Object.entries(query).every(([column, value]) => record[column] === value),
+      (record) => !Object.entries(query).every(([column, value]) => record[column] === value)
     );
     this.saveToFile();
     this.queue.shift();
