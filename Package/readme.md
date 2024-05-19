@@ -82,6 +82,7 @@ console.log(users3);
 
 | Function                 | Description                                    |
 | ------------------------ | ---------------------------------------------- |
+| `readTables`             | To read the tables from the database           |
 | `createTable`            | To create a table                              |
 | `deleteTable`            | To delete a table                              |
 | `createTableIfNotExists` | To create a table if it does not exist         |

@@ -20,10 +20,10 @@ interface QueueItem {
 }
 
 export default class DataBase {
-  queue: QueueItem[] = [];
-  password: string;
-  filePath: string;
-  tables: { [key: string]: Table } = {};
+  private queue: QueueItem[] = [];
+  private password: string;
+  private filePath: string;
+  private tables: { [key: string]: Table } = {};
   constructor(filePath: string, password: string) {
     this.tables = {};
     this.filePath = filePath || "./database.ht";
@@ -127,6 +127,11 @@ export default class DataBase {
     if (this.queue.length === 1) {
       this.processQueue();
     }
+  }
+
+  public readTables(): { [key: string]: Table } {
+    this.readFromFile();
+    return this.tables;
   }
 
   private processQueue() {

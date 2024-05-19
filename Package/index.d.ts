@@ -4,26 +4,11 @@ interface Table {
         [key: string]: any;
     }[];
 }
-interface QueueItem {
-    method: string;
-    table: string;
-    record?: {
-        [key: string]: any;
-    };
-    query?: {
-        [key: string]: any;
-    };
-    newData?: {
-        [key: string]: any;
-    };
-}
 export default class DataBase {
-    queue: QueueItem[];
-    password: string;
-    filePath: string;
-    tables: {
-        [key: string]: Table;
-    };
+    private queue;
+    private password;
+    private filePath;
+    private tables;
     constructor(filePath: string, password: string);
     createTable(tableName: string, columns?: string[]): void;
     createTableIfNotExists(tableName: string, columns: string[]): void;
@@ -45,6 +30,9 @@ export default class DataBase {
     delete(tableName: string, query?: {
         [key: string]: any;
     }): void;
+    readTables(): {
+        [key: string]: Table;
+    };
     private processQueue;
     private insertTable;
     private updateTable;
