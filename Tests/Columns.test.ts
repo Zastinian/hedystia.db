@@ -12,8 +12,8 @@ describe("Adding and Deleting Columns", () => {
 
   it("should add a new column to a table", () => {
     db.addColumn("users", "age", 0);
-    expect(db.tables.users.columns).toEqual(["name", "email", "age"]);
-    expect(db.tables.users.records.every((record) => record.age === 0)).toBe(true);
+    expect(db.readTables().users.columns).toEqual(["name", "email", "age"]);
+    expect(db.readTables().users.records.every((record) => record.age === 0)).toBe(true);
   });
 
   it("should throw an error if the column already exists", () => {
@@ -23,8 +23,8 @@ describe("Adding and Deleting Columns", () => {
   it("should delete a column from a table", () => {
     db.addColumn("users", "age", 0);
     db.deleteColumn("users", "age");
-    expect(db.tables.users.columns).toEqual(["name", "email"]);
-    expect(db.tables.users.records.every((record) => !record.hasOwnProperty("age"))).toBe(true);
+    expect(db.readTables().users.columns).toEqual(["name", "email"]);
+    expect(db.readTables().users.records.every((record) => !record.hasOwnProperty("age"))).toBe(true);
   });
 
   it("should throw an error if the column doesn't exist", () => {

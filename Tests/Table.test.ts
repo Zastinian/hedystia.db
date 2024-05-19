@@ -11,9 +11,9 @@ describe("Table Creation and Deletion", () => {
   it("should create a new table", () => {
     db.deleteTableIfExists("users");
     db.createTableIfNotExists("users", ["name", "email"]);
-    expect(db.tables).toHaveProperty("users");
-    expect(db.tables.users.columns).toEqual(["name", "email"]);
-    expect(db.tables.users.records).toEqual([]);
+    expect(db.readTables()).toHaveProperty("users");
+    expect(db.readTables().users.columns).toEqual(["name", "email"]);
+    expect(db.readTables().users.records).toEqual([]);
   });
 
   it("should throw an error if the table already exists", () => {
@@ -22,20 +22,20 @@ describe("Table Creation and Deletion", () => {
 
   it("should create a table if it doesn't exist", () => {
     db.createTableIfNotExists("posts", ["title", "content"]);
-    expect(db.tables).toHaveProperty("posts");
-    expect(db.tables.posts.columns).toEqual(["title", "content"]);
-    expect(db.tables.posts.records).toEqual([]);
+    expect(db.readTables()).toHaveProperty("posts");
+    expect(db.readTables().posts.columns).toEqual(["title", "content"]);
+    expect(db.readTables().posts.records).toEqual([]);
   });
 
   it("should not create a table if it already exists", () => {
     db.createTableIfNotExists("posts", ["title", "content"]);
-    expect(db.tables.posts.columns).toEqual(["title", "content"]);
-    expect(db.tables.posts.records).toEqual([]);
+    expect(db.readTables().posts.columns).toEqual(["title", "content"]);
+    expect(db.readTables().posts.records).toEqual([]);
   });
 
   it("should delete a table", () => {
     db.deleteTable("users");
-    expect(db.tables).not.toHaveProperty("users");
+    expect(db.readTables()).not.toHaveProperty("users");
   });
 
   it("should throw an error if the table doesn't exist", () => {
@@ -44,11 +44,11 @@ describe("Table Creation and Deletion", () => {
 
   it("should delete a table if it exists", () => {
     db.deleteTableIfExists("posts");
-    expect(db.tables).not.toHaveProperty("posts");
+    expect(db.readTables()).not.toHaveProperty("posts");
   });
 
   it("should not delete a table if it doesn't exist", () => {
     db.deleteTableIfExists("posts");
-    expect(db.tables).not.toHaveProperty("posts");
+    expect(db.readTables()).not.toHaveProperty("posts");
   });
 });
