@@ -1,8 +1,9 @@
+interface Records {
+    [key: string]: any;
+}
 interface Table {
     columns: string[];
-    records: {
-        [key: string]: any;
-    }[];
+    records: Records[];
 }
 export default class DataBase {
     private queue;
@@ -26,7 +27,7 @@ export default class DataBase {
     }): void;
     select(tableName: string, query?: {
         [key: string]: any;
-    }): unknown[];
+    }): Records[];
     delete(tableName: string, query?: {
         [key: string]: any;
     }): void;

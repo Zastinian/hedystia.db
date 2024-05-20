@@ -4,19 +4,21 @@ import cryptoJS from "crypto-js";
 const AES = cryptoJS.AES;
 const enc = cryptoJS.enc;
 
+interface Records {
+  [key: string]: any;
+}
+
 interface Table {
   columns: string[];
-  records: {
-    [key: string]: any;
-  }[];
+  records: Records[];
 }
 
 interface QueueItem {
   method: string;
   table: string;
-  record?: { [key: string]: any };
-  query?: { [key: string]: any };
-  newData?: { [key: string]: any };
+  record?: Records;
+  query?: Records;
+  newData?: Records;
 }
 
 export default class DataBase {
@@ -114,7 +116,7 @@ export default class DataBase {
     }
   }
 
-  public select(tableName: string, query: { [key: string]: any } = {}): unknown[] {
+  public select(tableName: string, query: { [key: string]: any } = {}): Records[] {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
