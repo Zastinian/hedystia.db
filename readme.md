@@ -76,12 +76,21 @@ const users3 = database.select("users");
 console.log("----------------------------------");
 
 console.log(users3);
+
+database.dropAll();
+
+const users4 = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(users4);
 ```
 
 ## Functions
 
 | Function                 | Description                                    |
 | ------------------------ | ---------------------------------------------- |
+| `dropAll`                | To drop all data from a table                  |
 | `readTables`             | To read the tables from the database           |
 | `createTable`            | To create a table                              |
 | `deleteTable`            | To delete a table                              |
