@@ -1,5 +1,5 @@
 interface Records {
-    [key: string]: any;
+    [key: string]: unknown;
 }
 interface Table {
     columns: string[];
@@ -15,25 +15,26 @@ export default class DataBase {
     createTableIfNotExists(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;
     deleteTableIfExists(tableName: string): void;
-    addColumn(tableName: string, column: string, defaultValue: any): void;
+    addColumn(tableName: string, column: string, defaultValue?: unknown): void;
     deleteColumn(tableName: string, column: string): void;
     insert(tableName: string, record: {
-        [key: string]: any;
+        [key: string]: unknown;
     }): void;
     update(tableName: string, query: {
-        [key: string]: any;
+        [key: string]: unknown;
     }, newData: {
-        [key: string]: any;
+        [key: string]: unknown;
     }): void;
     select(tableName: string, query?: {
-        [key: string]: any;
+        [key: string]: unknown;
     }): Records[];
     delete(tableName: string, query?: {
-        [key: string]: any;
+        [key: string]: unknown;
     }): void;
     readTables(): {
         [key: string]: Table;
     };
+    dropAll(): void;
     private processQueue;
     private insertTable;
     private updateTable;
