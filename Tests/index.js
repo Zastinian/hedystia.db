@@ -2,6 +2,7 @@ const db = require("../Package/index");
 
 const database = new db("./database.ht", "password");
 
+database.deleteTableIfExists("users");
 database.createTable("users", ["id", "name", "email"]);
 
 database.insert("users", { id: "1", name: "John Doe", email: "jdoe@example.com" });
@@ -53,3 +54,11 @@ const users3 = database.select("users");
 console.log("----------------------------------");
 
 console.log(users3);
+
+database.dropAll();
+
+const users4 = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(users4);
