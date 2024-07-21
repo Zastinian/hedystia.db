@@ -24,7 +24,7 @@ describe("Adding and Deleting Columns", () => {
     db.addColumn("users", "age", 0);
     db.deleteColumn("users", "age");
     expect(db.readTables().users.columns).toEqual(["name", "email"]);
-    expect(db.readTables().users.records.every((record) => !record.hasOwnProperty("age"))).toBe(true);
+    expect(db.readTables().users.records.every((record) => !Object.prototype.hasOwnProperty.call(record, "age"))).toBe(true);
   });
 
   it("should throw an error if the column doesn't exist", () => {
