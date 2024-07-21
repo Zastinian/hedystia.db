@@ -51,4 +51,15 @@ describe("Table Creation and Deletion", () => {
     db.deleteTableIfExists("posts");
     expect(db.readTables()).not.toHaveProperty("posts");
   });
+
+  it("should drop all data from a table", () => {
+    db.deleteTableIfExists("users");
+    db.createTableIfNotExists("users", ["name", "email"]);
+    db.insert("users", { name: "John", email: "john@example.com" });
+    db.insert("users", { name: "Jane", email: "jane@example.com" });
+    db.insert("users", { name: "Mary", email: "mary@example.com" });
+    expect(db.readTables().users.records).toHaveLength(3);
+    db.dropAll();
+    expect(db.readTables().users.records).toHaveLength(0);
+  });
 });
