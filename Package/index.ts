@@ -5,7 +5,7 @@ const AES = cryptoJS.AES;
 const enc = cryptoJS.enc;
 
 interface Records {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface Table {
@@ -15,7 +15,7 @@ interface Table {
 
 interface QueueItem {
   method: string;
-  table: string;
+  table?: string;
   record?: Records;
   query?: Records;
   newData?: Records;
@@ -69,7 +69,7 @@ export default class DataBase {
     }
   }
 
-  public addColumn(tableName: string, column: string, defaultValue: any): void {
+  public addColumn(tableName: string, column: string, defaultValue?: unknown): void {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -102,21 +102,21 @@ export default class DataBase {
     this.saveToFile();
   }
 
-  public insert(tableName: string, record: { [key: string]: any }): void {
+  public insert(tableName: string, record: { [key: string]: unknown }): void {
     this.queue.push({ method: "insert", table: tableName, record });
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  public update(tableName: string, query: { [key: string]: any }, newData: { [key: string]: any }): void {
+  public update(tableName: string, query: { [key: string]: unknown }, newData: { [key: string]: unknown }): void {
     this.queue.push({ method: "update", table: tableName, query, newData });
     if (this.queue.length === 1) {
       this.processQueue();
     }
   }
 
-  public select(tableName: string, query: { [key: string]: any } = {}): Records[] {
+  public select(tableName: string, query: { [key: string]: unknown } = {}): Records[] {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -124,7 +124,7 @@ export default class DataBase {
     return this.tables[tableName].records.filter((record) => Object.entries(query).every(([column, value]) => record[column] === value));
   }
 
-  public delete(tableName: string, query: { [key: string]: any } = {}): void {
+  public delete(tableName: string, query: { [key: string]: unknown } = {}): void {
     this.queue.push({ method: "delete", table: tableName, query });
     if (this.queue.length === 1) {
       this.processQueue();
@@ -136,29 +136,47 @@ export default class DataBase {
     return this.tables;
   }
 
+  public dropAll(): void {
+    this.queue.push({ method: "dropAllData" });
+    if (this.queue.length === 1) {
+      this.processQueue();
+    }
+  }
+
   private processQueue() {
     const request = this.queue[0];
     switch (request.method) {
       case "insert":
-        this.insertTable(request.table, request.record as { [key: string]: any });
+        if (!request.table) { throw new Error("Table name is required."); }
+        this.insertTable(request.table, request.record as { [key: string]: unknown });
         break;
       case "update":
-        this.updateTable(request.table, request.query as { [key: string]: any }, request.newData as { [key: string]: any });
+        if (!request.table) { throw new Error("Table name is required."); }
+        this.updateTable(request.table, request.query as { [key: string]: unknown }, request.newData as { [key: string]: unknown });
         break;
       case "delete":
-        this.deleteFromTable(request.table, request.query as { [key: string]: any });
+        if (!request.table) { throw new Error("Table name is required."); }
+        this.deleteFromTable(request.table, request.query as { [key: string]: unknown });
+        break;
+      case "dropAllData":
+        this.dropAllData();
         break;
     }
   }
 
-  private insertTable(tableName: string, record: { [key: string]: any }) {
+  private insertTable(tableName: string, record: { [key: string]: unknown }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
     }
 
     const table = this.tables[tableName];
-    const formattedRecord = table.columns.reduce((obj, column) => ({ ...obj, [column]: record[column] || null }), {});
+    const formattedRecord: { [key: string]: unknown } = {};
+
+    for (const column of table.columns) {
+      formattedRecord[column] = record[column] || null;
+    }
+
     table.records.push(formattedRecord);
     this.saveToFile();
     this.queue.shift();
@@ -167,18 +185,19 @@ export default class DataBase {
     }
   }
 
-  private updateTable(tableName: string, query: { [key: string]: any }, newData: { [key: string]: any }) {
+  private updateTable(tableName: string, query: { [key: string]: unknown }, newData: { [key: string]: unknown }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
     }
     const table = this.tables[tableName];
     const updatedRecords = table.records.map((record) => {
-      Object.entries(newData).forEach(([column, value]) => {
+      const entries = Object.entries(newData);
+      for (const [column, value] of entries) {
         if (table.columns.includes(column) && Object.entries(query).every(([qColumn, qValue]) => record[qColumn] === qValue)) {
           record[column] = value;
         }
-      });
+      }
       return record;
     });
     table.records = updatedRecords;
@@ -189,7 +208,7 @@ export default class DataBase {
     }
   }
 
-  private deleteFromTable(tableName: string, query: { [key: string]: any }) {
+  private deleteFromTable(tableName: string, query: { [key: string]: unknown }) {
     this.readFromFile();
     if (!this.tables[tableName]) {
       throw new Error(`Table "${tableName}" does not exist.`);
@@ -198,6 +217,18 @@ export default class DataBase {
     this.tables[tableName].records = this.tables[tableName].records.filter(
       (record) => !Object.entries(query).every(([column, value]) => record[column] === value)
     );
+    this.saveToFile();
+    this.queue.shift();
+    if (this.queue.length > 0) {
+      this.processQueue();
+    }
+  }
+
+  private dropAllData() {
+    this.readFromFile();
+    for (const tableName in this.tables) {
+      this.tables[tableName].records = [];
+    }
     this.saveToFile();
     this.queue.shift();
     if (this.queue.length > 0) {
