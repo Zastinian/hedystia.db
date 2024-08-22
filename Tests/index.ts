@@ -5,9 +5,17 @@ const database = new db("./database.ht", "password");
 database.deleteTableIfExists("users");
 database.createTable("users", ["id", "name", "email"]);
 
-database.insert("users", { id: "1", name: "John Doe", email: "jdoe@example.com" });
+database.insert("users", {
+	id: "1",
+	name: "John Doe",
+	email: "jdoe@example.com",
+});
 
-database.insert("users", { id: "2", name: "María", email: "maria@example.com" });
+database.insert("users", {
+	id: "2",
+	name: "María",
+	email: "maria@example.com",
+});
 
 const users = database.select("users");
 
@@ -62,3 +70,32 @@ const users4 = database.select("users");
 console.log("----------------------------------");
 
 console.log(users4);
+
+database.deleteTableIfExists("test_migration");
+database.deleteTableIfExists("migrations");
+
+database.enableMigrations();
+
+database.createMigration(
+	{
+		id: "cdaa5095-0c11-4878-8d89-c9be41215e57",
+		description: "Description",
+		timestamp: Date.now(),
+	},
+	() => {
+		database.createTableIfNotExists("test_migration", ["name"]);
+		database.insert("test_migration", { name: "John" });
+	},
+);
+
+const migrations = database.select("migrations");
+
+console.log("----------------------------------");
+
+console.log(migrations);
+
+const testMigration = database.select("test_migration");
+
+console.log("----------------------------------");
+
+console.log(testMigration);
