@@ -1,6 +1,6 @@
 {
   "name": "@hedystia/db",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "A database made by the company hedystia, easy to use",
   "main": "index.js",
   "types": "index.d.ts",
@@ -29,7 +29,7 @@
   "homepage": "https://docs.hedystia.com/db/start",
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
-    "@types/node": "^20.11.8",
+    "@types/node": "^22.5.0",
     "crypto-js": "^4.2.0"
   },
   "engines": {
