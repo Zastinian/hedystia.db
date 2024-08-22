@@ -84,6 +84,32 @@ const users4 = database.select("users");
 console.log("----------------------------------");
 
 console.log(users4);
+
+database.enableMigrations();
+
+database.createMigration(
+	{
+		id: "cdaa5095-0c11-4878-8d89-c9be41215e57",
+		description: "Description",
+		timestamp: Date.now(),
+	},
+	() => {
+		database.createTableIfNotExists("test_migration", ["name"]);
+		database.insert("test_migration", { name: "John" });
+	},
+);
+
+const migrations = database.select("migrations");
+
+console.log("----------------------------------");
+
+console.log(migrations);
+
+const testMigration = database.select("test_migration");
+
+console.log("----------------------------------");
+
+console.log(testMigration);
 ```
 
 ## Functions
@@ -92,6 +118,8 @@ console.log(users4);
 | ------------------------ | ---------------------------------------------- |
 | `dropAll`                | To drop all data from a table                  |
 | `readTables`             | To read the tables from the database           |
+| `enableMigrations`       | To enable migrations                           |
+| `createMigration`        | To create a migration                          |
 | `createTable`            | To create a table                              |
 | `deleteTable`            | To delete a table                              |
 | `createTableIfNotExists` | To create a table if it does not exist         |
