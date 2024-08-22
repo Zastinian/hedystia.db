@@ -5,12 +5,22 @@ interface Table {
     columns: string[];
     records: Records[];
 }
+interface Migration {
+    id: string;
+    description: string;
+    timestamp: number;
+    applied: boolean;
+}
 export default class DataBase {
     private queue;
     private password;
     private filePath;
     private tables;
+    private migrations;
+    private migrationsEnabled;
     constructor(filePath: string, password: string);
+    enableMigrations(): void;
+    createMigration(migration: Omit<Migration, "applied">, migrationFn: () => void): void;
     createTable(tableName: string, columns?: string[]): void;
     createTableIfNotExists(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;
@@ -36,9 +46,11 @@ export default class DataBase {
     };
     dropAll(): void;
     private processQueue;
+    private markMigrationAsApplied;
     private insertTable;
     private updateTable;
     private deleteFromTable;
+    private dropAllData;
     private saveToFile;
     private readFromFile;
 }
