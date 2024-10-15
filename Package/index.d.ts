@@ -45,12 +45,19 @@ export default class DataBase {
         [key: string]: Table;
     };
     dropAll(): void;
+    renameTable(oldTableName: string, newTableName: string): void;
+    renameColumn(tableName: string, oldColumnName: string, newColumnName: string): void;
+    getTableNames(): string[];
+    getColumnNames(tableName: string): string[];
+    getRecordCount(tableName: string): number;
     private processQueue;
     private markMigrationAsApplied;
     private insertTable;
     private updateTable;
     private deleteFromTable;
     private dropAllData;
+    private renameTableInDb;
+    private renameColumnInDb;
     private saveToFile;
     private readFromFile;
 }

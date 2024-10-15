@@ -16,6 +16,9 @@ interface Table {
 interface QueueItem {
 	method: string;
 	table?: string;
+	newTableName?: string;
+	column?: string;
+	newColumnName?: string;
 	record?: Records;
 	query?: Records;
 	newData?: Records;
@@ -214,6 +217,54 @@ export default class DataBase {
 		}
 	}
 
+	public renameTable(oldTableName: string, newTableName: string): void {
+		this.queue.push({
+			method: "renameTable",
+			table: oldTableName,
+			newTableName,
+		});
+		if (this.queue.length === 1) {
+			this.processQueue();
+		}
+	}
+
+	public renameColumn(
+		tableName: string,
+		oldColumnName: string,
+		newColumnName: string,
+	): void {
+		this.queue.push({
+			method: "renameColumn",
+			table: tableName,
+			column: oldColumnName,
+			newColumnName,
+		});
+		if (this.queue.length === 1) {
+			this.processQueue();
+		}
+	}
+
+	public getTableNames(): string[] {
+		this.readFromFile();
+		return Object.keys(this.tables);
+	}
+
+	public getColumnNames(tableName: string): string[] {
+		this.readFromFile();
+		if (!this.tables[tableName]) {
+			throw new Error(`Table "${tableName}" does not exist.`);
+		}
+		return this.tables[tableName].columns;
+	}
+
+	public getRecordCount(tableName: string): number {
+		this.readFromFile();
+		if (!this.tables[tableName]) {
+			throw new Error(`Table "${tableName}" does not exist.`);
+		}
+		return this.tables[tableName].records.length;
+	}
+
 	private processQueue(migrationFn?: () => void): void {
 		const request = this.queue[0];
 		switch (request.method) {
@@ -253,6 +304,24 @@ export default class DataBase {
 					migrationFn();
 					this.markMigrationAsApplied(request.record?.id as string);
 				}
+				break;
+			case "renameTable":
+				if (!request.table || !request.newTableName) {
+					throw new Error("Old and new table names are required.");
+				}
+				this.renameTableInDb(request.table, request.newTableName);
+				break;
+			case "renameColumn":
+				if (!request.table || !request.column || !request.newColumnName) {
+					throw new Error(
+						"Table, old column, and new column names are required.",
+					);
+				}
+				this.renameColumnInDb(
+					request.table,
+					request.column,
+					request.newColumnName,
+				);
 				break;
 		}
 	}
@@ -358,6 +427,58 @@ export default class DataBase {
 		for (const tableName in this.tables) {
 			this.tables[tableName].records = [];
 		}
+		this.saveToFile();
+		this.queue.shift();
+		if (this.queue.length > 0) {
+			this.processQueue();
+		}
+	}
+
+	private renameTableInDb(oldTableName: string, newTableName: string): void {
+		this.readFromFile();
+		if (!this.tables[oldTableName]) {
+			throw new Error(`Table "${oldTableName}" does not exist.`);
+		}
+		if (this.tables[newTableName]) {
+			throw new Error(`Table "${newTableName}" already exists.`);
+		}
+		this.tables[newTableName] = this.tables[oldTableName];
+		delete this.tables[oldTableName];
+		this.saveToFile();
+		this.queue.shift();
+		if (this.queue.length > 0) {
+			this.processQueue();
+		}
+	}
+
+	private renameColumnInDb(
+		tableName: string,
+		oldColumnName: string,
+		newColumnName: string,
+	): void {
+		this.readFromFile();
+		if (!this.tables[tableName]) {
+			throw new Error(`Table "${tableName}" does not exist.`);
+		}
+		if (!this.tables[tableName].columns.includes(oldColumnName)) {
+			throw new Error(
+				`Column "${oldColumnName}" does not exist in table "${tableName}".`,
+			);
+		}
+		if (this.tables[tableName].columns.includes(newColumnName)) {
+			throw new Error(
+				`Column "${newColumnName}" already exists in table "${tableName}".`,
+			);
+		}
+
+		const columnIndex = this.tables[tableName].columns.indexOf(oldColumnName);
+		this.tables[tableName].columns[columnIndex] = newColumnName;
+
+		for (const record of this.tables[tableName].records) {
+			record[newColumnName] = record[oldColumnName];
+			delete record[oldColumnName];
+		}
+
 		this.saveToFile();
 		this.queue.shift();
 		if (this.queue.length > 0) {

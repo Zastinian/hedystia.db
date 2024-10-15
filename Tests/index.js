@@ -1,4 +1,4 @@
-const db = require("../Package/index");
+const db = require("../Package/index.js");
 
 const database = new db("./database.ht", "password");
 
@@ -63,13 +63,33 @@ console.log("----------------------------------");
 
 console.log(users3);
 
-database.dropAll();
+database.renameTable("users", "customers");
 
-const users4 = database.select("users");
+const users4 = database.select("customers");
 
 console.log("----------------------------------");
 
 console.log(users4);
+
+database.renameTable("customers", "users");
+
+database.renameColumn("users", "name", "fullName");
+
+const users5 = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(users5);
+
+database.renameColumn("users", "fullName", "name");
+
+database.dropAll();
+
+const users6 = database.select("users");
+
+console.log("----------------------------------");
+
+console.log(users6);
 
 database.deleteTableIfExists("test_migration");
 database.deleteTableIfExists("migrations");
@@ -99,3 +119,21 @@ const testMigration = database.select("test_migration");
 console.log("----------------------------------");
 
 console.log(testMigration);
+
+const tableNames = database.getTableNames();
+
+console.log("----------------------------------");
+
+console.log(tableNames);
+
+const columnNames = database.getColumnNames("users");
+
+console.log("----------------------------------");
+
+console.log(columnNames);
+
+const recordCount = database.getRecordCount("users");
+
+console.log("----------------------------------");
+
+console.log(recordCount);
