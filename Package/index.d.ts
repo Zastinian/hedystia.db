@@ -20,7 +20,7 @@ export default class DataBase {
     private migrationsEnabled;
     constructor(filePath: string, password: string);
     enableMigrations(): void;
-    createMigration(migration: Omit<Migration, "applied">, migrationFn: () => void): void;
+    createMigration(migration: Omit<Migration, "applied">, migrationFn: () => Promise<void> | void): Promise<void>;
     createTable(tableName: string, columns?: string[]): void;
     createTableIfNotExists(tableName: string, columns: string[]): void;
     deleteTable(tableName: string): void;

@@ -56,10 +56,10 @@ export default class DataBase {
 		]);
 	}
 
-	public createMigration(
+	public async createMigration(
 		migration: Omit<Migration, "applied">,
-		migrationFn: () => void,
-	): void {
+		migrationFn: () => Promise<void> | void,
+	): Promise<void> {
 		if (!this.migrationsEnabled) {
 			throw new Error(
 				"Migrations are not enabled. Call enableMigrations() first.",
@@ -80,7 +80,7 @@ export default class DataBase {
 				record: { ...migration, applied: false },
 			});
 			if (this.queue.length === 1) {
-				this.processQueue(migrationFn);
+				await this.processQueue(migrationFn);
 			}
 		}
 	}
@@ -265,7 +265,9 @@ export default class DataBase {
 		return this.tables[tableName].records.length;
 	}
 
-	private processQueue(migrationFn?: () => void): void {
+	private async processQueue(
+		migrationFn?: () => Promise<void> | void,
+	): Promise<void> {
 		const request = this.queue[0];
 		switch (request.method) {
 			case "insert":
@@ -301,7 +303,7 @@ export default class DataBase {
 				break;
 			case "migration":
 				if (migrationFn) {
-					migrationFn();
+					await migrationFn();
 					this.markMigrationAsApplied(request.record?.id as string);
 				}
 				break;
