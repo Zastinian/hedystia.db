@@ -1,8 +1,5 @@
-import fs from "fs";
-import cryptoJS from "crypto-js";
-
-const AES = cryptoJS.AES;
-const enc = cryptoJS.enc;
+import fs from "node:fs";
+import crypto from "node:crypto";
 
 interface Records {
 	[key: string]: unknown;
@@ -493,20 +490,64 @@ export default class DataBase {
 			throw new Error(`File path must include '.ht': ${this.filePath}`);
 		}
 		const data = JSON.stringify(this.tables);
-		const encrypted = AES.encrypt(data, this.password).toString();
-		fs.writeFileSync(this.filePath, encrypted);
+		const salt = crypto.randomBytes(8);
+		const passwordBuffer = Buffer.from(this.password, 'utf-8');
+		const { key, iv } = this.evpBytesToKey(passwordBuffer, salt, 32, 16);
+		const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+		const encrypted = Buffer.concat([
+			cipher.update(Buffer.from(data, 'utf8')),
+			cipher.final()
+		]);
+		const encryptedData = Buffer.concat([
+			Buffer.from('Salted__'),
+			salt,
+			encrypted
+		]);
+		fs.writeFileSync(this.filePath, encryptedData.toString('base64'));
 	}
 
 	private readFromFile(): void {
 		if (!fs.existsSync(this.filePath)) {
 			return;
 		}
-		const encrypted = fs.readFileSync(this.filePath, "utf8");
-		const data = AES.decrypt(encrypted, this.password).toString(enc.Utf8);
 		try {
-			this.tables = JSON.parse(data);
-		} catch {
+			const encryptedBase64 = fs.readFileSync(this.filePath, 'utf8');
+			const encryptedData = Buffer.from(encryptedBase64, 'base64');
+			if (encryptedData.length < 16 || encryptedData.subarray(0, 8).toString() !== 'Salted__') {
+				throw new Error('Invalid encrypted data format');
+			}
+			const salt = encryptedData.subarray(8, 16);
+			const encrypted = encryptedData.subarray(16);
+			const passwordBuffer = Buffer.from(this.password, 'utf-8');
+			const { key, iv } = this.evpBytesToKey(passwordBuffer, salt, 32, 16);
+			const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+			const decrypted = Buffer.concat([
+				decipher.update(encrypted),
+				decipher.final()
+			]).toString('utf8');
+			this.tables = JSON.parse(decrypted);
+		} catch (error) {
 			this.tables = {};
 		}
+	}
+
+	private evpBytesToKey(password: Buffer, salt: Buffer, keyLength: number, ivLength: number): { key: Buffer, iv: Buffer } {
+		let derivedKey = Buffer.alloc(0);
+		let digest = Buffer.alloc(0);
+		const requiredLength = keyLength + ivLength;
+		while (derivedKey.length < requiredLength) {
+			const hash = crypto.createHash('md5');
+			if (digest.length > 0) {
+				hash.update(digest);
+			}
+			hash.update(password);
+			hash.update(salt);
+			digest = hash.digest();
+			derivedKey = Buffer.concat([derivedKey, digest]);
+		}
+		return {
+			key: derivedKey.subarray(0, keyLength),
+			iv: derivedKey.subarray(keyLength, keyLength + ivLength)
+		};
 	}
 }

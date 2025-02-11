@@ -60,5 +60,6 @@ export default class DataBase {
     private renameColumnInDb;
     private saveToFile;
     private readFromFile;
+    private evpBytesToKey;
 }
 export {};
