@@ -1,6 +1,6 @@
 {
   "name": "@hedystia/db",
-  "version": "1.11.1",
+  "version": "2.0.0",
   "description": "A database made by the company hedystia, easy to use",
   "main": "index.js",
   "types": "index.d.ts",
@@ -15,7 +15,7 @@
     "typescript"
   ],
   "scripts": {
-    "build": "bun build --target=node --format=cjs index.ts --outfile index.js --minify-syntax --minify-identifiers",
+    "build": "bun build --target=node --format=cjs index.ts --outfile index.js --minify",
     "types": "tsc --noEmit false --emitDeclarationOnly"
   },
   "author": "contact@hedystia.com",
@@ -29,9 +29,7 @@
   },
   "homepage": "https://docs.hedystia.com/db/start",
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
-    "@types/node": "^22.5.0",
-    "crypto-js": "^4.2.0"
+    "@types/node": "^22.13.1"
   },
   "engines": {
     "node": ">=18.0.0"

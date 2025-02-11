@@ -1,4 +1,4 @@
-const db = require("../Package/index.js");
+const { default: db } = require("../Package/index.js");
 
 const database = new db("./database.ht", "password");
 

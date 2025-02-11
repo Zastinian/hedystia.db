@@ -19,7 +19,7 @@ yarn add @hedystia/db
 ## Example
 
 ```js
-const Database = require("@hedystia/db");
+const { default: Database } = require("@hedystia/db");
 
 // Create a file named database.ht and enter the password
 const database = new Database("./database.ht", "password");
